@@ -1,1 +1,35 @@
+// 2-Opt algorithm implementation in TypeScript
 
+function twoOpt(route: number[], distanceMatrix: number[][]): number[] {
+    let bestRoute = route;
+    let improved = true;
+
+    while (improved) {
+        improved = false;
+        for (let i = 1; i < bestRoute.length - 1; i++) {
+            for (let j = i + 1; j < bestRoute.length; j++) {
+                const newRoute = twoOptSwap(bestRoute, i, j);
+                if (calculateTotalDistance(newRoute, distanceMatrix) < calculateTotalDistance(bestRoute, distanceMatrix)) {
+                    bestRoute = newRoute;
+                    improved = true;
+                }
+            }
+        }
+    }
+    return bestRoute;
+}
+
+function twoOptSwap(route: number[], i: number, j: number): number[] {
+    const newRoute = route.slice(0, i).concat(route.slice(i, j + 1).reverse(), route.slice(j + 1));
+    return newRoute;
+}
+
+function calculateTotalDistance(route: number[], distanceMatrix: number[][]): number {
+    let totalDistance = 0;
+    for (let i = 0; i < route.length - 1; i++) {
+        totalDistance += distanceMatrix[route[i]][route[i + 1]];
+    }
+    return totalDistance;
+}
+
+export { twoOpt, twoOptSwap, calculateTotalDistance };
